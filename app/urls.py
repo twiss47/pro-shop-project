@@ -1,13 +1,16 @@
-from django.urls import path
-from django.conf import settings
-from .views import index, product_detail, category_products
+
+from django.urls import path,include
+from .views import index,detail,login_view, register_view, logout_view, add_product
+
 app_name = 'app'
 
 urlpatterns = [
-    path('',index,name="index"),
-    path('product/<int:pk>/', product_detail, name='product_detail'),
-    path('category/<int:category_id>/', category_products, name='category_products'),
-
-
+    path('',index,name='index'),
+    path('category/<int:category_id>',index,name='products_of_category'),
+    path('detail/<product_id>',detail,name='detail'),
+    path('register/', register_view, name='register'),
+    path('login/', login_view, name='login'),
+    path('logout/', logout_view, name='logout'),
+    path('product/add/', add_product, name='add_product'),
 ]
 

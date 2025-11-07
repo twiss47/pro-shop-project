@@ -1,92 +1,91 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Shop Homepage</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
-    <link href="{% static 'app/css/styles.css' %}" rel="stylesheet" />
-</head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container px-4 px-lg-5">
-            <a class="navbar-brand" href="{% url 'app:index' %}">My Shop</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'app:index' %}">Home</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
-                           data-bs-toggle="dropdown" aria-expanded="false">Categories</a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{% url 'app:index' %}">All Products</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            {% for category in categories %}
-                                <li><a class="dropdown-item" href="{% url 'app:category_products' category.id %}">{{ category.title }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+{% extends "app/base/base.html" %}
+{%load static%}
 
-    <!-- Header -->
-    <header class="bg-dark py-4">
-        <div class="container text-center text-white">
-            <h1 class="fw-bolder">Our Products</h1>
-        </div>
-    </header>
 
-    <!-- Products Section -->
-    <section class="py-5">
-        <div class="container px-4 px-lg-5 mt-4">
-            <div class="d-flex justify-content-center gap-4 flex-wrap">
-                {% for product in products|slice:":2" %}
-                <div class="card" style="width: 22rem;">
-                    <!-- Product image -->
-                    {% if product.image %}
-                        <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.name }}">
-                    {% else %}
-                        <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="{{ product.name }}">
-                    {% endif %}
 
-                    <!-- Product body -->
-                    <div class="card-body text-center">
-                        <h5 class="fw-bolder">{{ product.name }}</h5>
-                        {% if product.discounted_price and product.discounted_price < product.price %}
-                            <span class="text-muted text-decoration-line-through me-2">${{ product.price }}</span>
-                            <span class="text-success fw-bold">${{ product.discounted_price }}</span>
-                            {% if product.discount %}
-                                <span class="badge bg-danger ms-2">{{ product.discount }}% OFF</span>
-                            {% endif %}
-                        {% else %}
-                            <span class="fw-bold">${{ product.price }}</span>
-                        {% endif %}
-                    </div>
+{%block title%}
+    Home
+{%endblock%}
 
-                    <!-- Button -->
-                    <div class="card-footer bg-transparent border-0 text-center">
-                        <a class="btn btn-outline-dark" href="{% url 'app:product_detail' product.id %}">View Product</a>
-                    </div>
+{%block home_content%}
+
+
+<header class="bg-dark py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">Shop in style</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">With this shop hompeage template</p>
                 </div>
-                {% endfor %}
+            </div>
+</header>
+        <!-- Section-->
+
+<div class="container mt-5">
+            <div class="text-left">
+                <h3>Filter by</h3>
+            </div>
+            <div class="row">
+                <div class="col-1">
+                    <a class="btn btn-outline-dark mt-auto" href="#"> Expensive </a>
+                </div>
+
+                <div class="col-1">
+                    <a class="btn btn-outline-dark mt-auto" href="#"> Cheap </a>
+                </div>
+
+                <div class="col-1">
+                    <a class="btn btn-outline-dark mt-auto" href="#"> Likes </a>
+                </div>
+
             </div>
         </div>
-    </section>
+        <section class="py-5">
+            <div class="container px-4 px-lg-5 mt-5">
+                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                    {% for product in products%}
+                        <div class="col mb-5">
+                            <div class="card h-100">
+                                <!-- Sale badge-->
+                                {% if product.discount%}
+                                    <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
+                                {%endif%}
+                                <!-- Product image-->
+                                <img class="card-img-top" src="{{product.get_image_url}}" alt="..." />
+                                <!-- Product details-->
+                                <div class="card-body p-4">
+                                    <div class="text-center">
+                                        <!-- Product name-->
+                                        <h5 class="fw-bolder">{{product.name}}</h5>
+                                        <!-- Product reviews-->
+                                        <div class="d-flex justify-content-center small text-warning mb-2">
+                                            <div class="bi-star-fill"></div>
+                                            <div class="bi-star-fill"></div>
+                                            <div class="bi-star-fill"></div>
+                                            <div class="bi-star-fill"></div>
+                                            <div class="bi-star-fill"></div>
+                                        </div>
+                                        <!-- Product price-->
+                                        {% if product.discount %}
+                                            <span class="text-muted text-decoration-line-through">${{product.price}}</span>
+                                            ${{product.discounted_price}}
+                                        {%else%}   
+                                            ${{product.price}} 
+                                        {%endif%}
+                                    </div>
+                                </div>
+                                <!-- Product actions-->
+                                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'app:detail' product.id %}">View product</a></div>
+                                
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    {%endfor%}
+                   
+                </div>
+            </div>
+</section>
 
-    <!-- Footer -->
-    <footer class="py-5 bg-dark">
-        <div class="container">
-            <p class="m-0 text-center text-white">© My Shop 2025</p>
-        </div>
-    </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+{%endblock%}
