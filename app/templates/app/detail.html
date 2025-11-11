@@ -15,6 +15,12 @@
                     <div class="col-md-6">
                         <div class="small mb-1">Stock : {{product.stock}} </div>
                         <h1 class="display-5 fw-bolder">{{product.name}}</h1>
+                        {% if user.is_superuser %}
+                            <a href="{% url 'app:edit_product' product.id %}" class="btn btn-warning mb-3">Edit</a>
+                            <a href="{% url 'app:delete_product' product.id %}" class="btn btn-danger mb-3">Delete</a>
+                        {% endif %}
+
+
                         <div class="fs-5 mb-5">
                             {% if product.discount %}
                                 <span class="text-muted text-decoration-line-through">${{product.price}}</span>

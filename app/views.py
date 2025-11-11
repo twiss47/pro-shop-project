@@ -11,7 +11,7 @@ from .models import Product
 
 
 def register_view(request):
-    if request.method == 'Post':
+    if request.method == 'POST':
         form = RegisterForm(request.Post)
         if form.is_valid():
             user = form.save()
@@ -73,13 +73,11 @@ def detail(request,product_id):
     return render(request,'app/detail.html',context)
 
 
+def superuser_required(user):
+   return user.is_superuser
 
-def superuser_required(view_func):
-    decorated_view_func = user_passes_test(lambda u: u.is_superuser, login_url='app:login')(view_func)
-    return decorated_view_func
 
 @user_passes_test(superuser_required)
-@superuser_required
 def add_product(request):
     form = ProductForm(request.POST or None, request.FILES or None)
     if form.is_valid():
@@ -87,21 +85,27 @@ def add_product(request):
         return redirect('app:index')
     return render(request, 'app/product_form.html', {'form': form, 'title': 'Add Product'})
 
-@user_passes_test(superuser_required)
-@superuser_required
-def update_product(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    form = ProductForm(request.POST or None, request.FILES or None, instance=product)
-    if form.is_valid():
-        form.save()
-        return redirect('app:index')
-    return render(request, 'app/product_form.html', {'form': form, 'title': 'Update Product'})
+
+
 
 @user_passes_test(superuser_required)
-@superuser_required
 def delete_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
     if request.method == 'POST':
         product.delete()
         return redirect('app:index')
-    return render(request, 'app/product_confirm_delete.html', {'product': product})
+    return render(request, 'app/delete_product.html', {'product': product})
+
+
+@user_passes_test(superuser_required)
+def edit_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('app:index')
+    else:
+        form = ProductForm(instance=product)
+
+    return render(request, 'app/edit_product.html', {'form': form, 'product': product})

@@ -1,8 +1,9 @@
 {% extends 'app/base/base.html' %}
+{% load static %}
 
 {% block title %}{{ title }}{% endblock %}
 
-{% block home_content %}
+{% block content %}
 <div class="container mt-5" style="max-width: 600px;">
     <h2 class="mb-4 text-center">{{ title }}</h2>
     <form method="POST" enctype="multipart/form-data">
@@ -10,5 +11,6 @@
         {{ form.as_p }}
         <button type="submit" class="btn btn-success w-100 mt-3">{{ title }}</button>
     </form>
+    <a href="{% url 'app:index' %}" class="btn btn-secondary w-100 mt-2">Cancel</a>
 </div>
 {% endblock %}
