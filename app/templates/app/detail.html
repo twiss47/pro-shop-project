@@ -34,22 +34,32 @@
                             <form>
                                 <div class="form-group">
                                     <h2>Place an order</h2>
-                                </div>
-                                <div class="form-group mb-3">
-                                  <label for="formGroupExampleInput">Your name</label>
-                                  <input type="text" class="form-control"  placeholder="Your name">
-                                </div>
-                                <div class="form-group mb-3">
-                                  <label for="formGroupExampleInput2">Your phone</label>
-                                  <input type="text" class="form-control" placeholder="Your phone">
-                                </div>
+                                    <form method="post" action="">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="order_submit" value="1">
+
+                                        <div class="form-group mb-3">
+                                            <label for="name">Your name</label>
+                                            <input type="text" name="name" class="form-control" placeholder="Your name" required>
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <label for="phone">Your phone</label>
+                                            <input type="text" name="phone" class="form-control" placeholder="Your phone" required>
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <label for="quantity">Quantity</label>
+                                            <input type="number" name="quantity" class="form-control" value="1" min="1" max="{{ product.stock }}" required>
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <button type="submit" class="btn btn-success">Place Order</button>
+                                        </div>
+                                    </form>
+
+
         
                                
         
-                                  <div class="form-group mb-3">
-                                   
-                                    <input type="text" class="btn btn-success" value="Send">
-                                  </div>
+                                  
                               </form>
                            
                         </div>
@@ -58,69 +68,55 @@
             </div>
         </section>
 
-        <div class="container mt-4 mb-4">
-            <div class="row">
-                <div class="col-12">
-                    <div class="text-center">
-                        <h2>Latest comments</h2>
-                    </div>
+       <div class="container mt-4 mb-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="text-center">
+                <h2>Latest comments</h2>
+            </div>
 
-                    <div class="media card p-4 mt-2">
-                        <div class="media-body">
-                          <h3 class="mt-0">John Doe</h3>
-                          Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                        </div>
+            {% for comment in comments %}
+                <div class="media card p-4 mt-2">
+                    <div class="media-body">
+                        <h3 class="mt-0">{{ comment.name }}</h3>
+                        <small>{{ comment.created_at|date:"M d, Y H:i" }}</small>
+                        <p>{{ comment.text }}</p>
                     </div>
+                </div>
+            {% empty %}
+                <p class="text-center mt-3">Nothing 😕</p>
+            {% endfor %}
+        </div>
 
-                    <div class="media card p-4 mt-2">
-                        <div class="media-body">
-                          <h3 class="mt-0">John Doe</h3>
-                          Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                        </div>
-                    </div>
-
-                    <div class="media card p-4 mt-2">
-                        <div class="media-body">
-                          <h3 class="mt-0">John Doe</h3>
-                          Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                        </div>
-                    </div>
-
+        <div class="col-8 offset-2 mt-5">
+            <div class="p-5">
+                <div class="text-center">
+                    <h3>Add Comment</h3>
                 </div>
 
-                <div class="col-8 offset-2 mt-5">
-                   
-                    <div class=" p-5">
-                        <div class="text-center">
-                            <h3>Add Comment</h3>
-                        </div>
-                    
-                    <form>
-                        <div class="form-group mb-3">
-                          <label for="formGroupExampleInput">Your name</label>
-                          <input type="text" class="form-control"  placeholder="Your name">
-                        </div>
-                        <div class="form-group mb-3">
-                          <label for="formGroupExampleInput2">Your email</label>
-                          <input type="text" class="form-control" placeholder="Your email">
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label for="formGroupExampleInput2">Your comment</label>
-                           <textarea name="" class="form-control" id="" cols="30" rows="10"></textarea>
-                          </div>
-
-                          <div class="form-group mb-3">
-                           
-                            <input type="text" class="btn btn-success" value="Send">
-                          </div>
-                      </form>
-
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <div class="form-group mb-3">
+                        <label for="name">Your name</label>
+                        <input type="text" name="name" class="form-control" placeholder="Your name" required>
                     </div>
-                      
-                </div>
+                    <div class="form-group mb-3">
+                        <label for="email">Your email</label>
+                        <input type="email" name="email" class="form-control" placeholder="Your email" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="text">Your comment</label>
+                        <textarea name="text" class="form-control" cols="30" rows="5" required></textarea>
+                    </div>
+                    <div class="form-group mb-3">
+                        <input type="submit" class="btn btn-success" value="Send">
+                    </div>
+                </form>
             </div>
         </div>
+    </div>
+</div>
+
         <!-- Related items section-->
         <section class="py-5 bg-light">
             <div class="container px-4 px-lg-5 mt-5">

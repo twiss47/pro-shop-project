@@ -50,3 +50,27 @@ class Product(BaseModel):
     
     def __str__(self):
         return self.name
+
+
+
+class Comment(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments')
+    name = models.CharField(max_length=50)
+    email = models.EmailField()
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.created_at.strftime('%Y-%m-%d')}"
+    
+
+
+class Order(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='orders')
+    name = models.CharField(max_length=50)
+    phone = models.CharField(max_length=20)
+    quantity = models.PositiveIntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Order #{self.id} - {self.product.name} by {self.name}"

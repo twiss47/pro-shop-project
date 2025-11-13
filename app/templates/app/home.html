@@ -21,23 +21,35 @@
         <!-- Section-->
 
 <div class="container mt-5">
-            <div class="text-left">
-                <h3>Filter by</h3>
-            </div>
-            <div class="row">
-                <div class="col-1">
-                    <a class="btn btn-outline-dark mt-auto" href="#"> Expensive </a>
-                </div>
+    <div class="text-left">
+        <h3>Filter by</h3>
+    </div>
+    <div class="row g-2">
+        <!-- Expensive -->
+        <div class="col-auto">
+            <a class="btn btn-outline-dark {% if filter_type == 'expensive' %}active{% endif %}" 
+               href="?filter_type=expensive{% if search_query %}&q={{ search_query }}{% endif %}">
+                Expensive
+            </a>
+        </div>
 
-                <div class="col-1">
-                    <a class="btn btn-outline-dark mt-auto" href="#"> Cheap </a>
-                </div>
+        <!-- Cheap -->
+        <div class="col-auto">
+            <a class="btn btn-outline-dark {% if filter_type == 'cheap' %}active{% endif %}" 
+               href="?filter_type=cheap{% if search_query %}&q={{ search_query }}{% endif %}">
+                Cheap
+            </a>
+        </div>
 
-                <div class="col-1">
-                    <a class="btn btn-outline-dark mt-auto" href="#"> Likes </a>
-                </div>
+        <!-- Likes (agar kerak bo‘lsa) -->
+        <div class="col-auto">
+            <a class="btn btn-outline-dark" href="?filter_type=likes{% if search_query %}&q={{ search_query }}{% endif %}">
+                Likes
+            </a>
+        </div>
+    </div>
+</div>
 
-            </div>
         </div>
         <section class="py-5">
             <div class="container px-4 px-lg-5 mt-5">
