@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'baton',
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -48,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -99,6 +102,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+JAZZMIN_SETTINGS = {
+    "site_title": "My Admin",
+    "site_header": "My Project",
+    "welcome_sign": "Welcome to Admin Panel",
+    "copyright": "My Company 2025",
+}
+
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
@@ -124,3 +135,20 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+BATON = {
+    'SITE_HEADER': 'My Online Shop',
+    'SITE_TITLE': 'Admin Panel',
+    'INDEX_TITLE': 'Control',
+    'SUPPORT_HREF': 'mailto:youremail@example.com',
+    'COPYRIGHT': 'My Shop © 2025',
+    'POWERED_BY': 'Django Baton',
+}
+
+
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'   
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',                
+]

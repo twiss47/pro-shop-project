@@ -1,7 +1,7 @@
 from django.db import models
 from decimal import Decimal
 from django.templatetags.static import static
-
+from django.utils.text import slugify
 
 
 class BaseModel(models.Model):
@@ -22,25 +22,23 @@ class Category(BaseModel):
         verbose_name_plural = 'Categories'
 
 
-
 class Product(BaseModel):
     name = models.CharField(max_length=255)
-    description = models.TextField(null=True,blank=True)
-    price = models.DecimalField(max_digits=14,decimal_places=2)
-    image = models.ImageField(upload_to='products/',null=True,blank=True)
+    slug = models.SlugField(blank=True, null=False, unique=True)
+    description = models.TextField(null=True, blank=True)
+    price = models.DecimalField(max_digits=14, decimal_places=2)
+    image = models.ImageField(upload_to='products/', null=True, blank=True)
     stock = models.PositiveSmallIntegerField(default=1)
     discount = models.PositiveSmallIntegerField(default=0)
-    category = models.ForeignKey(Category,on_delete=models.SET_NULL,
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL,
                                  related_name='products',
-                                 null=True,blank=True)    
+                                 null=True, blank=True)    
     
     @property
     def discounted_price(self):
         if self.discount:
             return self.price * Decimal(f'{(1 - self.discount / 100)}')
-        
         return self.price
-    
     
     @property
     def get_image_url(self):
@@ -48,9 +46,19 @@ class Product(BaseModel):
             return static('app/images/not_found.jpg')
         return self.image.url
     
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.name)
+            slug = base_slug
+            counter = 1
+            while Product.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.name
-
 
 
 class Comment(models.Model):
@@ -62,7 +70,6 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.created_at.strftime('%Y-%m-%d')}"
-    
 
 
 class Order(models.Model):

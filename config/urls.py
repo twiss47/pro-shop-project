@@ -21,6 +21,7 @@ from django.conf import settings
 
 
 urlpatterns = [
+    path('admin/', include('baton.urls')),
     path('admin/', admin.site.urls),
     path('',include('app.urls',namespace='app'))
     
