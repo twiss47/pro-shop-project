@@ -61,15 +61,26 @@ class Product(BaseModel):
         return self.name
 
 
-class Comment(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments')
-    name = models.CharField(max_length=50)
+class Comment(BaseModel):
+    class RatingChoices(models.IntegerChoices):
+        ONE = 1, "⭐ 1"
+        TWO = 2, "⭐⭐ 2"
+        THREE = 3, "⭐⭐⭐ 3"
+        FOUR = 4, "⭐⭐⭐⭐ 4"
+        FIVE = 5, "⭐⭐⭐⭐⭐ 5"
+    
+    name = models.CharField(max_length=255)
     email = models.EmailField()
-    text = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    message = models.TextField()
+    product = models.ForeignKey(Product,on_delete=models.CASCADE,related_name='comments')
+    file = models.ImageField(upload_to='comments/%Y/%m/%d/',null=True,blank=True)
+    rating = models.PositiveSmallIntegerField(choices=RatingChoices.choices,default = RatingChoices.FIVE)
+    is_handle = models.BooleanField(default=False)
+    
+    
 
     def __str__(self):
-        return f"{self.name} - {self.created_at.strftime('%Y-%m-%d')}"
+        return f'{self.name} - {self.message}'
 
 
 class Order(models.Model):
@@ -81,3 +92,11 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order #{self.id} - {self.product.name} by {self.name}"
+
+
+
+
+
+
+
+

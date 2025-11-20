@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import user_passes_test
-from django.db.models import Q
+from django.db.models import Q, Avg
 
 from .models import Category, Product, Comment, Order
 from .forms import RegisterForm, LoginForm, ProductForm, OrderModelForm
@@ -57,6 +57,13 @@ def index(request, category_id=None):
     search_query = request.GET.get('q', '')
     filter_type = request.GET.get('filter_type', '')
 
+    products = Product.objects.annotate(
+    avg_rating=Avg('comments__rating')
+    )
+
+
+
+
     if category_id:
         products = Product.objects.filter(category=category_id)
     else:
@@ -67,6 +74,8 @@ def index(request, category_id=None):
             Q(name__icontains=search_query) |
             Q(description__icontains=search_query)
         )
+
+
 
     products = filter_product(filter_type, products)
 
@@ -79,32 +88,38 @@ def index(request, category_id=None):
 
 
 
+
 def detail(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    comments = product.comments.all().order_by('-created_at')
-    order_form = OrderModelForm()
+    product = Product.objects.annotate(
+    avg_rating=Avg('comments__rating')
+    ).get(pk=pk)
 
-    # COMMENT YOZISH
-    if request.method == "POST" and 'comment_submit' in request.POST:
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        text = request.POST.get('text')
 
+    product.avg_rating = int(product.avg_rating or 0)
+    comments = Comment.objects.filter(product=product).order_by('-created_at')
+
+    if request.method == "POST":
         Comment.objects.create(
             product=product,
-            name=name,
-            email=email,
-            text=text
+            name=request.POST.get("name"),
+            email=request.POST.get("email"),
+            rating=request.POST.get("rating"),
+            message=request.POST.get("message"),
+            file=request.FILES.get("image")
         )
-        messages.success(request, "Your comment has been added!")
         return redirect('app:detail', pk=pk)
 
-    context = {
-        'product': product,
-        'comments': comments,
-        'order_form': order_form,
-    }
-    return render(request, 'app/detail.html', context)
+    related_products = Product.objects.filter(
+        category=product.category
+    ).exclude(id=product.id)[:4]
+
+    return render(request, "app/detail.html", {
+        "product": product,
+        "comments": comments,
+        "related_products": related_products,
+    })
+
+
 
 
 
@@ -174,16 +189,9 @@ def edit_product(request, pk):
     return render(request, 'app/edit_product.html', {'form': form, 'product': product})
 
 
-def comment_view(request):
-    if request.method == "POST":
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        text = request.POST.get('text')
 
-        if name and email and text:
-            Comment.objects.create(name=name, email=email, text=text)
 
-        return redirect('app:comment')
-
-    comments = Comment.objects.all().order_by('-created_at')
-    return render(request, 'app/comments.html', {'comments': comments})
+def realted_prodcuts(product, limit:4):
+    return Product.objects.filter(
+        category = product.category
+    ).exclude(id=product.id)[limit:4]
