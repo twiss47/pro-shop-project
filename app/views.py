@@ -5,7 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Q, Avg
 
-from .models import Category, Product, Comment, Order
+from .models import Category, Product, Comment, Order, Contact
 from .forms import RegisterForm, LoginForm, ProductForm, OrderModelForm
 from .utils import filter_product
 
@@ -88,25 +88,34 @@ def index(request, category_id=None):
 
 
 
-
 def detail(request, pk):
     product = Product.objects.annotate(
-    avg_rating=Avg('comments__rating')
+        avg_rating=Avg('comments__rating')
     ).get(pk=pk)
-
 
     product.avg_rating = int(product.avg_rating or 0)
     comments = Comment.objects.filter(product=product).order_by('-created_at')
 
     if request.method == "POST":
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        message = request.POST.get("message")
+        rating = request.POST.get("rating", 5)
+        file = request.FILES.get("file")  # <== HTML formdagi input nomi bilan mos
+
+        if not email:
+            messages.error(request, "Email kiritilishi shart!")
+            return redirect('app:detail', pk=pk)
+
         Comment.objects.create(
             product=product,
-            name=request.POST.get("name"),
-            email=request.POST.get("email"),
-            rating=request.POST.get("rating"),
-            message=request.POST.get("message"),
-            file=request.FILES.get("image")
+            name=name,
+            email=email,
+            rating=rating,
+            message=message,
+            file=file
         )
+
         return redirect('app:detail', pk=pk)
 
     related_products = Product.objects.filter(
@@ -118,8 +127,6 @@ def detail(request, pk):
         "comments": comments,
         "related_products": related_products,
     })
-
-
 
 
 
@@ -195,3 +202,27 @@ def realted_prodcuts(product, limit:4):
     return Product.objects.filter(
         category = product.category
     ).exclude(id=product.id)[limit:4]
+
+
+
+def contact_view(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        subject = request.POST.get("subject")
+        message_text = request.POST.get("message")
+
+        if not all([name, email, subject, message_text]):
+            messages.error(request, "All fields are required!")
+            return redirect(request.META.get('HTTP_REFERER'))
+
+        Contact.objects.create(
+            name=name,
+            email=email,
+            subject=subject,
+            message=message_text
+        )
+        messages.success(request, "Your message has been sent successfully!")
+        return redirect(request.META.get('HTTP_REFERER'))
+
+    return render(request, "app/contact.html")  

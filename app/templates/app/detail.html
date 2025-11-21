@@ -47,32 +47,35 @@
                         </div>
                         <p class="lead">{{product.description}}</p>
                         <div class="d-flex">
-                            <form>
-                                <div class="form-group">
-                                    <h2>Place an order</h2>
-                                    <form method="post" action="">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="order_submit" value="1">
+                            <div class="form-group w-100">
+                                <h2>Place an order</h2>
 
-                                        <div class="form-group mb-3">
-                                            <label for="name">Your name</label>
-                                            <input type="text" name="name" class="form-control" placeholder="Your name" required>
-                                        </div>
-                                        <div class="form-group mb-3">
-                                            <label for="phone">Your phone</label>
-                                            <input type="text" name="phone" class="form-control" placeholder="Your phone" required>
-                                        </div>
-                                        <div class="form-group mb-3">
-                                            <label for="quantity">Quantity</label>
-                                            <input type="number" name="quantity" class="form-control" value="1" min="1" max="{{ product.stock }}" required>
-                                        </div>
-                                        <div class="form-group mb-3">
-                                            <button type="submit" class="btn btn-success">Place Order</button>
-                                        </div>
-                                    </form>                               
-                              </form>
-                           
+                                <form method="post" action="">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="order_submit" value="1">
+
+                                    <div class="form-group mb-3">
+                                        <label for="name">Your name</label>
+                                        <input type="text" name="name" class="form-control" placeholder="Your name" required>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label for="phone">Your phone</label>
+                                        <input type="text" name="phone" class="form-control" placeholder="Your phone" required>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label for="quantity">Quantity</label>
+                                        <input type="number" name="quantity" class="form-control" value="1" min="1" max="{{ product.stock }}" required>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <button type="submit" class="btn btn-success">Place Order</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -106,10 +109,11 @@
                         </div>
                     
                     <form method="post" enctype="multipart/form-data">
-                        {%csrf_token%}
+                        {% csrf_token %}
+
                         <div class="form-group mb-3">
-                          <label for="rating">Select Rating:</label>
-                            <select name="rating" id="rating" class="rating-select" required>
+                            <label for="rating">Select Rating:</label>
+                            <select name="rating" id="rating" class="form-control" required>
                                 <option value="">...</option>
                                 <option value="1">⭐ 1</option>
                                 <option value="2">⭐⭐ 2</option>
@@ -117,72 +121,64 @@
                                 <option value="4">⭐⭐⭐⭐ 4</option>
                                 <option value="5">⭐⭐⭐⭐⭐ 5</option>
                             </select>
-
-
-                        </div>
-
-
-                        <div class="form-group mb-3">
-                          <label for="formGroupExampleInput">Your name</label>
-                          <input type="text" class="form-control" name="name" placeholder="Your name">
-                        </div>
-                        <div class="form-group mb-3">
-                          <label for="formGroupExampleInput2">Your email</label>
-                          <input type="email" name="email" class="form-control" placeholder="Your email">
                         </div>
 
                         <div class="form-group mb-3">
-                            <label for="formGroupExampleInput2">Your comment</label>
-                           <textarea name="message" class="form-control" id="" cols="30" rows="10"></textarea>
-                          </div>
+                            <label>Your name</label>
+                            <input type="text" name="name" class="form-control" required>
+                        </div>
 
-                          <div class="form-group mb-3">
-                            <label for="image-upload" class="img-label">Upload Image</label>
-                            <input type="file" id="image-upload" name="file" accept="image/*">
+                        <div class="form-group mb-3">
+                            <label>Your email</label>
+                            <input type="email" name="email" class="form-control" placeholder="Your email" >
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label>Your comment</label>
+                            <textarea name="message" class="form-control" rows="6" required></textarea>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label>Upload Image</label>
+                            <input type="file" name="file" accept="image/*">
                             <img id="preview-image" class="preview-img" src="#" alt="Preview..." style="display:none;">
+                        </div>
 
-                          </div>
-
-                          <div class="form-group mb-3">
-                           
-                            <button type="submit" class="btn btn-success">Send</button>
-                          </div>
-                      </form>
-
+                        <button type="submit" class="btn btn-success">Send</button>
+                    </form>
                     </div>
                       
                 </div>
             </div>
         </div>
 
-        <div class="container mt-5">
-            <h3 class="mb-4">Related Products</h3>
+    <div class="container mt-5">
+    <h3 class="mb-4">Related Products</h3>
 
-            <div class="row">
-                {% for item in related_products %}
-                <div class="col-md-3 col-6 mb-4">
-                    <div class="card shadow-sm h-100">
+    <div class="row">
+        {% for item in related_products %}
+        <div class="col-md-3 col-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <a href="{% url 'app:detail' item.id %}">
+                    <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.title }}">
+                </a>
 
-                        <a href="{% url 'app:detail' item.id %}">View</a>
-                            <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.title }}">
-                        </a>
+                <div class="card-body">
+                    <h5 class="card-title text-truncate">{{ item.title }}</h5>
+                    <p class="card-text text-muted">{{ item.price }} $</p>
 
-                        <div class="card-body">
-                            <h5 class="card-title text-truncate">{{ item.title }}</h5>
-                            <p class="card-text text-muted">{{ item.price }} $</p>
-
-                            <a href="{% url 'app:detail' item.id %}">View</a> class="btn btn-primary btn-sm w-100">
-                                View
-                            </a>
-                        </div>
-
-                    </div>
+                    <a href="{% url 'app:detail' item.id %}" class="btn btn-primary btn-sm w-100">
+                        View
+                    </a>
                 </div>
-                {% empty %}
-                <p>No related products found.</p>
-                {% endfor %}
             </div>
         </div>
+        {% empty %}
+        <p>No related products found.</p>
+        {% endfor %}
+    </div>
+</div>
+
 
                   
 
