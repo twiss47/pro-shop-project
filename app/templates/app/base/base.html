@@ -66,14 +66,14 @@
                             <span class="nav-link">Hello, {{ user.username }}!</span>
                         </li>
                         <li class="nav-item">
-                            <a class="btn btn-outline-danger btn-sm ms-2" href="{% url 'app:logout' %}">Logout</a>
+                            <a class="btn btn-outline-danger btn-sm ms-2" href="{% url 'users:logout' %}">Logout</a>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="btn btn-outline-primary btn-sm me-2" href="{% url 'app:login' %}">Login</a>
+                            <a class="btn btn-outline-primary btn-sm me-2" href="{% url 'users:login' %}">Login</a>
                         </li>
                         <li class="nav-item">
-                            <a class="btn btn-primary btn-sm text-white" href="{% url 'app:register' %}">Register</a>
+                            <a class="btn btn-primary btn-sm text-white" href="{% url 'users:register' %}">Register</a>
                         </li>
                     {% endif %}
                     <li class="nav-item">

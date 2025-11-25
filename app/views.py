@@ -6,50 +6,8 @@ from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Q, Avg
 
 from .models import Category, Product, Comment, Order, Contact
-from .forms import RegisterForm, LoginForm, ProductForm, OrderModelForm
+from .forms import ProductForm, OrderModelForm
 from .utils import filter_product
-
-
-def register_view(request):
-    if request.method == 'POST':
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, 'Successfully Registered')
-            return redirect('app:index')
-    else:
-        form = RegisterForm()
-
-    return render(request, 'app/register.html', {'form': form})
-
-
-
-
-
-def login_view(request):
-    if request.method == 'POST':
-        form = LoginForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            messages.success(request, f'Welcome, {user.username}!')
-            return redirect('app:index')
-    else:
-        form = LoginForm()
-
-    return render(request, 'app/login.html', {'form': form})
-
-
-
-
-def logout_view(request):
-    logout(request)
-    messages.info(request, 'You logged out')
-    return redirect('app:login')
-
-
-
 
 
 def index(request, category_id=None):
@@ -101,7 +59,7 @@ def detail(request, pk):
         email = request.POST.get("email")
         message = request.POST.get("message")
         rating = request.POST.get("rating", 5)
-        file = request.FILES.get("file")  # <== HTML formdagi input nomi bilan mos
+        file = request.FILES.get("file")  
 
         if not email:
             messages.error(request, "Email kiritilishi shart!")

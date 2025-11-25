@@ -11,7 +11,7 @@ def product_save(sender, instance, created, **kwargs):
     else:
         print(f'[LOG] product updated:{instance.name}')
 
-
+@receiver(post_save, sender=Order)
 def decrease_product_stock(sender, instance, created, **kwargs):
     if created:
         product = instance.product
