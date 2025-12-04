@@ -166,7 +166,7 @@ def realted_prodcuts(product, limit:4):
 def contact_view(request):
     if request.method == "POST":
         name = request.POST.get("name")
-        email = request.POST.get("email")
+        email = re0uest.POST.get("email")
         subject = request.POST.get("subject")
         message_text = request.POST.get("message")
 

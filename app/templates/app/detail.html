@@ -1,261 +1,170 @@
 {% extends 'app/base/base.html' %}
 {% load static %}
+{% load i18n %}
 
+{% block title %}
+    {% trans "Detail" %}
+{% endblock %}
 
-{%block title%}
-    Detail
-{%endblock%}
-
-
-{% block detail_content%}
+{% block detail_content %}
 <section class="py-5">
-            <div class="container px-4 px-lg-5 my-5">
-                <div class="row gx-4 gx-lg-5 align-items-center">
-                    <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="{{product.get_image_url}}" alt="..." /></div>
-                    <div class="col-md-6">
-                        <div class="small mb-1">Stock : {{product.stock}} </div>
-                        <h1 class="display-5 fw-bolder">{{product.name}}</h1>
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="row gx-4 gx-lg-5 align-items-center">
+            <div class="col-md-6">
+                <img class="card-img-top mb-5 mb-md-0" src="{{ product.get_image_url }}" alt="..." />
+            </div>
+            <div class="col-md-6">
+                <div class="small mb-1">{% trans "Stock" %}: {{ product.stock }}</div>
+                <h1 class="display-5 fw-bolder">{{ product.name }}</h1>
+                <h1 class="product-title">{{ product.title }}</h1>
 
-                        <h1 class="product-title">{{ product.title }}</h1>
-
-                        <div class="product-rating">
-                            {% for i in "12345" %}
-                                {% if forloop.counter <= product.avg_rating %}
-                                    ★
-                                {% else %}
-                                    ☆
-                                {% endif %}
-                            {% endfor %}
-                            <span>({{ product.avg_rating }})</span>
-
-                        </div>
-
-
-                        {% if user.is_superuser %}
-                            <a href="{% url 'app:edit_product' product.id %}" class="btn btn-warning mb-3">Edit</a>
-                            <a href="{% url 'app:delete_product' product.id %}" class="btn btn-danger mb-3">Delete</a>
+                <div class="product-rating">
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= product.avg_rating %}
+                            ★
+                        {% else %}
+                            ☆
                         {% endif %}
-
-
-                        <div class="fs-5 mb-5">
-                            {% if product.discount %}
-                                <span class="text-muted text-decoration-line-through">${{product.price}}</span>
-                                ${{product.discounted_price}}
-                            {%else%}   
-                                ${{product.price}} 
-                            {%endif%}
-                        </div>
-                        <p class="lead">{{product.description}}</p>
-                        <div class="d-flex">
-                            <div class="form-group w-100">
-                                <h2>Place an order</h2>
-
-                                <form method="post" action="">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="order_submit" value="1">
-
-                                    <div class="form-group mb-3">
-                                        <label for="name">Your name</label>
-                                        <input type="text" name="name" class="form-control" placeholder="Your name" required>
-                                    </div>
-
-                                    <div class="form-group mb-3">
-                                        <label for="phone">Your phone</label>
-                                        <input type="text" name="phone" class="form-control" placeholder="Your phone" required>
-                                    </div>
-
-                                    <div class="form-group mb-3">
-                                        <label for="quantity">Quantity</label>
-                                        <input type="number" name="quantity" class="form-control" value="1" min="1" max="{{ product.stock }}" required>
-                                    </div>
-
-                                    <div class="form-group mb-3">
-                                        <button type="submit" class="btn btn-success">Place Order</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </section>
-
-       <div class="container mt-4 mb-4">
-            <div class="row">
-                <div class="col-12">
-                    <div class="text-center">
-                        <h2>Latest comments({{comments.count}})</h2>
-                    </div>
-                    
-                    {% for comment in comments %}
-                        <div class="media card p-4 mt-2">
-                            <div class="media-body">
-                            <h4>{{comment.created_at}}</h4>
-                            <h3 class="mt-0">{{comment.name}}</h3>
-                            {{comment.message}}
-                            </div>
-                        </div>
-                    {%endfor%}
-                   
-
+                    {% endfor %}
+                    <span>({{ product.avg_rating }})</span>
                 </div>
 
-                <div class="col-8 offset-2 mt-5">
-                   
-                    <div class=" p-5">
-                        <div class="text-center">
-                            <h3>Add Comment</h3>
-                        </div>
-                    
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
+                {% if user.is_superuser %}
+                    <a href="{% url 'app:edit_product' product.id %}" class="btn btn-warning mb-3">{% trans "Edit" %}</a>
+                    <a href="{% url 'app:delete_product' product.id %}" class="btn btn-danger mb-3">{% trans "Delete" %}</a>
+                {% endif %}
 
-                        <div class="form-group mb-3">
-                            <label for="rating">Select Rating:</label>
-                            <select name="rating" id="rating" class="form-control" required>
-                                <option value="">...</option>
-                                <option value="1">⭐ 1</option>
-                                <option value="2">⭐⭐ 2</option>
-                                <option value="3">⭐⭐⭐ 3</option>
-                                <option value="4">⭐⭐⭐⭐ 4</option>
-                                <option value="5">⭐⭐⭐⭐⭐ 5</option>
-                            </select>
-                        </div>
+                <div class="fs-5 mb-5">
+                    {% if product.discount %}
+                        <span class="text-muted text-decoration-line-through">${{ product.price }}</span>
+                        ${{ product.discounted_price }}
+                    {% else %}
+                        ${{ product.price }}
+                    {% endif %}
+                </div>
+                <p class="lead">{{ product.description }}</p>
 
-                        <div class="form-group mb-3">
-                            <label>Your name</label>
-                            <input type="text" name="name" class="form-control" required>
-                        </div>
+                <div class="d-flex">
+                    <div class="form-group w-100">
+                        <h2>{% trans "Place an order" %}</h2>
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <input type="hidden" name="order_submit" value="1">
 
-                        <div class="form-group mb-3">
-                            <label>Your email</label>
-                            <input type="email" name="email" class="form-control" placeholder="Your email" >
-                        </div>
+                            <div class="form-group mb-3">
+                                <label for="name">{% trans "Your name" %}</label>
+                                <input type="text" name="name" class="form-control" placeholder="{% trans 'Your name' %}" required>
+                            </div>
 
-                        <div class="form-group mb-3">
-                            <label>Your comment</label>
-                            <textarea name="message" class="form-control" rows="6" required></textarea>
-                        </div>
+                            <div class="form-group mb-3">
+                                <label for="phone">{% trans "Your phone" %}</label>
+                                <input type="text" name="phone" class="form-control" placeholder="{% trans 'Your phone' %}" required>
+                            </div>
 
-                        <div class="form-group mb-3">
-                            <label>Upload Image</label>
-                            <input type="file" name="file" accept="image/*">
-                            <img id="preview-image" class="preview-img" src="#" alt="Preview..." style="display:none;">
-                        </div>
+                            <div class="form-group mb-3">
+                                <label for="quantity">{% trans "Quantity" %}</label>
+                                <input type="number" name="quantity" class="form-control" value="1" min="1" max="{{ product.stock }}" required>
+                            </div>
 
-                        <button type="submit" class="btn btn-success">Send</button>
-                    </form>
+                            <div class="form-group mb-3">
+                                <button type="submit" class="btn btn-success">{% trans "Place Order" %}</button>
+                            </div>
+                        </form>
                     </div>
-                      
                 </div>
             </div>
         </div>
+    </div>
+</section>
 
-    <div class="container mt-5">
-    <h3 class="mb-4">Related Products</h3>
-
+<div class="container mt-4 mb-4">
     <div class="row">
-        {% for item in related_products %}
-        <div class="col-md-3 col-6 mb-4">
-            <div class="card shadow-sm h-100">
-                <a href="{% url 'app:detail' item.id %}">
-                    <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.title }}">
-                </a>
+        <div class="col-12">
+            <div class="text-center">
+                <h2>{% trans "Latest comments" %} ({{ comments.count }})</h2>
+            </div>
 
-                <div class="card-body">
-                    <h5 class="card-title text-truncate">{{ item.title }}</h5>
-                    <p class="card-text text-muted">{{ item.price }} $</p>
-
-                    <a href="{% url 'app:detail' item.id %}" class="btn btn-primary btn-sm w-100">
-                        View
-                    </a>
+            {% for comment in comments %}
+                <div class="media card p-4 mt-2">
+                    <div class="media-body">
+                        <h4>{{ comment.created_at }}</h4>
+                        <h3 class="mt-0">{{ comment.name }}</h3>
+                        {{ comment.message }}
+                    </div>
                 </div>
+            {% endfor %}
+        </div>
+
+        <div class="col-8 offset-2 mt-5">
+            <div class="p-5">
+                <div class="text-center">
+                    <h3>{% trans "Add Comment" %}</h3>
+                </div>
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="form-group mb-3">
+                        <label for="rating">{% trans "Select Rating" %}:</label>
+                        <select name="rating" id="rating" class="form-control" required>
+                            <option value="">...</option>
+                            <option value="1">⭐ 1</option>
+                            <option value="2">⭐⭐ 2</option>
+                            <option value="3">⭐⭐⭐ 3</option>
+                            <option value="4">⭐⭐⭐⭐ 4</option>
+                            <option value="5">⭐⭐⭐⭐⭐ 5</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>{% trans "Your name" %}</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>{% trans "Your email" %}</label>
+                        <input type="email" name="email" class="form-control" placeholder="{% trans 'Your email' %}">
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>{% trans "Your comment" %}</label>
+                        <textarea name="message" class="form-control" rows="6" required></textarea>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>{% trans "Upload Image" %}</label>
+                        <input type="file" name="file" accept="image/*">
+                        <img id="preview-image" class="preview-img" src="#" alt="{% trans 'Preview' %}" style="display:none;">
+                    </div>
+
+                    <button type="submit" class="btn btn-success">{% trans "Send" %}</button>
+                </form>
             </div>
         </div>
-        {% empty %}
-        <p>No related products found.</p>
-        {% endfor %}
     </div>
 </div>
 
-
-                  
-
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Product image-->
-                            <img class="card-img-top" 
-                            src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">Fancy Product</h5>
-                                    <h1 class="display-5 fw-bolder">{{ product.name }}</h1>
-                                    <!-- Product price-->
-                                    $40.00 - $80.00
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="detail.html">View product</a></div>
-
-                        
-                            </div>
-                        </div>
+<div class="container mt-5">
+    <h3 class="mb-4">{% trans "Related Products" %}</h3>
+    <div class="row">
+        {% for item in related_products %}
+            <div class="col-md-3 col-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <a href="{% url 'app:detail' item.id %}">
+                        <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.title }}">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title text-truncate">{{ item.title }}</h5>
+                        <p class="card-text text-muted">${{ item.price }}</p>
+                        <a href="{% url 'app:detail' item.id %}" class="btn btn-primary btn-sm w-100">
+                            {% trans "View" %}
+                        </a>
                     </div>
-
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Product image-->
-                            <img class="card-img-top" 
-                            src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">Fancy Product</h5>
-                                    <!-- Product price-->
-                                    $40.00 - $80.00
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="detail.html">View product</a></div>
-
-                        
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Product image-->
-                            <img class="card-img-top" 
-                            src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">Fancy Product</h5>
-                                    <!-- Product price-->
-                                    $40.00 - $80.00
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="detail.html">View product</a></div>
-
-                        
-                            </div>
-                        </div>
-                    </div>
-
-
-
                 </div>
             </div>
-        </section>
-
-{%endblock%}
+        {% empty %}
+            <p>{% trans "No related products found." %}</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

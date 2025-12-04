@@ -1,30 +1,32 @@
 {% extends 'app/base/base.html' %}
+{% load static %}
+{% load i18n %}
 
-{% block title %}Contact{% endblock %}
+{% block title %}{% trans "Contact" %}{% endblock %}
 
 {% block content %}
 <section class="py-5">
     <div class="container">
-        <h2 class="mb-4">Contact Us</h2>
+        <h2 class="mb-4">{% trans "Contact Us" %}</h2>
         <form method="post">
             {% csrf_token %}
             <div class="mb-3">
-                <label>Your Name</label>
+                <label>{% trans "Your Name" %}</label>
                 <input type="text" name="name" class="form-control" required>
             </div>
             <div class="mb-3">
-                <label>Your Email</label>
+                <label>{% trans "Your Email" %}</label>
                 <input type="email" name="email" class="form-control" required>
             </div>
             <div class="mb-3">
-                <label>Subject</label>
+                <label>{% trans "Subject" %}</label>
                 <input type="text" name="subject" class="form-control" required>
             </div>
             <div class="mb-3">
-                <label>Message</label>
+                <label>{% trans "Message" %}</label>
                 <textarea name="message" class="form-control" rows="6" required></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">Send Message</button>
+            <button type="submit" class="btn btn-primary">{% trans "Send Message" %}</button>
         </form>
     </div>
 </section>

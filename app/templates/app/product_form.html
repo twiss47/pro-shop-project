@@ -1,5 +1,6 @@
 {% extends 'app/base/base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block title %}{{ title }}{% endblock %}
 
@@ -9,8 +10,10 @@
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-success w-100 mt-3">{{ title }}</button>
+        <button type="submit" class="btn btn-success w-100 mt-3">
+            {% blocktrans with title=title %}{{ title }}{% endblocktrans %}
+        </button>
     </form>
-    <a href="{% url 'app:index' %}" class="btn btn-secondary w-100 mt-2">Cancel</a>
+    <a href="{% url 'app:index' %}" class="btn btn-secondary w-100 mt-2">{% trans "Cancel" %}</a>
 </div>
 {% endblock %}
