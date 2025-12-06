@@ -32,27 +32,36 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'jazzmin',
+
+    'modeltranslation',         
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app.apps.AppConfig',
+
+    'app.apps.AppConfig',       
     'users.apps.UsersConfig',
+
     'baton',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',  
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-     'django.middleware.locale.LocaleMiddleware',
 
+    # Custom middleware
+    'app.middleware.IpLoggerMiddleware',
+    'app.middleware.LoginRequiredMiddleware',
+    'app.middleware.LogoutMiddleware',  
 ]
 
 ROOT_URLCONF = 'config.urls'

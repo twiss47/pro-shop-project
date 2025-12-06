@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth import login, logout
+from django.contrib.auth import logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Q, Avg
@@ -166,7 +166,7 @@ def realted_prodcuts(product, limit:4):
 def contact_view(request):
     if request.method == "POST":
         name = request.POST.get("name")
-        email = re0uest.POST.get("email")
+        email = request.POST.get("email")
         subject = request.POST.get("subject")
         message_text = request.POST.get("message")
 
