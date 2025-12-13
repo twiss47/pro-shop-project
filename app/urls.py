@@ -1,20 +1,66 @@
-from django.urls import path,include
-from .views import index,detail, add_product, delete_product, edit_product, contact_view
+from django.urls import path
 from django.views.i18n import set_language
 
-
+from .views import (
+    ProductListView,
+    ProductDetailView,
+    ProductCreateView,
+    ProductUpdateView,
+    ProductDeleteView,
+    OrderCreateView,
+    ContactView,
+)
 
 app_name = 'app'
 
 urlpatterns = [
-    path('',index,name='index'),
-    path('category/<int:category_id>',index,name='products_of_category'),
-    path('product/<int:pk>/', detail, name='detail'),
-    path('product/add/', add_product, name='add_product'),
-    path('edit/<int:pk>/', edit_product, name='edit_product'),
-    path('delete/<int:pk>/',delete_product, name='delete_product'),
-    path('contact/', contact_view, name='contact'),
-    path('set-language/', set_language, name='set_language'),
-]
+    path('', ProductListView.as_view(), name='index'),
 
- 
+    path(
+        'category/<int:category_id>/',
+        ProductListView.as_view(),
+        name='products_of_category'
+    ),
+
+    path(
+        'product/<int:pk>/',
+        ProductDetailView.as_view(),
+        name='detail'
+    ),
+
+    path(
+        'product/<int:pk>/order/',
+        OrderCreateView.as_view(),
+        name='order'
+    ),
+
+    path(
+        'add/',
+        ProductCreateView.as_view(),
+        name='add_product'
+    ),
+
+    path(
+        'edit/<int:pk>/',
+        ProductUpdateView.as_view(),
+        name='edit_product'
+    ),
+
+    path(
+        'delete/<int:pk>/',
+        ProductDeleteView.as_view(),
+        name='delete_product'
+    ),
+
+    path(
+        'contact/',
+        ContactView.as_view(),
+        name='contact'
+    ),
+
+    path(
+        'set-language/',
+        set_language,
+        name='set_language'
+    ),
+]
