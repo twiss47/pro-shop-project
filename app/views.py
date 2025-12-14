@@ -72,7 +72,7 @@ class ProductDetailView(DetailView):
 
         email = request.POST.get("email")
         if not email:
-            messages.error(request, "Email kiritilishi shart!")
+            messages.error(request, "Email is required!")
             return redirect('app:detail', pk=self.object.pk)
 
         Comment.objects.create(
@@ -104,7 +104,7 @@ class OrderCreateView(View):
                 messages.success(request, "Order successfully sent! ✅", extra_tags='order')
 
         else:
-            messages.error(request, "Formda xatolik bor", extra_tags='order')
+            messages.error(request, "Form Error", extra_tags='order')
 
         return redirect('app:detail', pk=pk)
 
